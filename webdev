@@ -1,0 +1,150 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import subprocess as sp
+import getpass
+
+try:
+	option = sys.argv[1]
+except:
+	sys.exit("Please add 'help' to show help menu")
+
+
+if not option in ["default","flask","node","help"]:
+	sys.exit("Please add 'help' to show help menu")
+elif option in ["default","flask","node"]:
+	pass
+else:
+	help_ = """
+usage : 
+
+	webdev [option] [project_name]
+
+help :
+
+	[option]*
+
+		default : default web development files ('html/css/js')
+		flask : a flask project including 'templates/index.html'
+		node : a Node.JS file including 'nodemon' package
+
+	[project_name]*
+
+		;p
+"""
+	sys.exit(help_)
+
+try:
+	project_name = sys.argv[2]
+	project_name = f"/home/{getpass.getuser()}/Desktop/Programming/"+project_name
+except:
+	sys.exit("Please insert a project name!")
+
+
+if project_name.endswith("/"):
+	project_name = project_name[0:len(project_name)-2]
+
+try:
+	os.mkdir(project_name)
+except:
+	sys.exit(f"File exists [{project_name}] already,please delete it then try again")
+
+def default():
+	html = "index.html"
+	css = "css/style.css"
+	js = "js/script.js"
+
+
+
+	print("[!] creating css/")
+	os.mkdir(project_name+"/css")
+	print("[!] css/ created succesfly")
+	print("[!] creating js/")
+	os.mkdir(project_name+"/js")
+	print("[!] js/ created succesfly")
+	print("[!] creating static/")
+	os.mkdir(project_name+"/static")
+	print("[!] static/ created succesfly")
+
+	print(f"[!] creating {html}")
+	with open(project_name+"/"+html,"w") as f:
+		f.write("<html><head><link rel='stylesheet' type='text/css' href='styles/style.css'></head><body><h1>Everything has successfly created</h1></body></html>")
+	print(f"[!] creating {css}")
+	with open(project_name+"/"+css,"w") as f:
+		f.write("body{margin:0;padding:0;background-color:yellow;color:red;}")
+	print(f"[!] creating {js}")
+	with open(project_name+"/"+js,"w") as f:
+		f.write("// script.js")
+	with open(project_name+"/"+"http-server","w") as f:
+		f.write(
+			"""
+			#!/bin/sh
+
+			sudo python3 -m http.server 8080
+			""")
+	sp.run(f"chmod +x {project_name}/http-server",shell=True)
+
+def node():
+	os.chdir(project_name)
+	sp.run("npm init",shell=True)
+	sp.run("npm i nodemon",shell=True)
+	with open("main.js","w") as f:
+		f.write('console.log("Everything is working");')
+	print("Please run `nodemon main.js` or `node main.js`")
+
+def flask():
+	os.chdir(project_name)
+	os.mkdir("static")
+	os.mkdir("templates")
+	with open("app.py","w") as f:
+		f.write("""
+from flask import Flask,render_template
+import uuid
+
+app = Flask(__name__)
+
+@app.route('/')
+def main():
+	return render_template('index.html',randomUuid=uuid.uuid4())
+
+if __name__ == '__main__':
+	app.run(debug=True)			
+			""")
+		with open("templates/index.html","w") as f:
+			f.write("""
+<!DOCTYPE html>
+<html>
+<head>
+	<title>homepage</title>
+	<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' crossorigin='anonymous'>
+</head>
+<body>
+	<br><br>
+
+	<div style='text-align:center;width:60%;height:40%;margin:0 auto;border:1px solid black;border-radius:8px;background-color:#e1e1e1;color:black;'>
+	<p> if you can see a random unique id here => {{ randomUuid }} ,it proves that the back-end is working</p>
+	<h1>Flask website generated using webdev</h1>
+	<hr>
+	<br>
+	<h3>Everything is generated successfly</h3>
+	<p>if you're not using `http-server` please run on the project directory <code style='background-color: #c4c4c4;'>./http-server</code></p>
+	<hr>
+	<p>if you liked this project please visit my github <a target='_blank' href='https://github.com/unknown989/'>page</a> and check other project</p>
+	</div>
+</body>
+</html>
+				""")
+
+if option == "default":
+	default()
+elif option == "flask":
+	flask()
+else:
+	node()
+
+
+print(f"[!] {project_name} created succesfly")
+
+os.chdir(project_name)
+
