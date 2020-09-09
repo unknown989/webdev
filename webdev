@@ -37,7 +37,7 @@ help :
 
 try:
 	project_name = sys.argv[2]
-	project_name = f"/home/{getpass.getuser()}/Desktop/Programming/"+project_name
+	project_name = f"/home/{getpass.getuser()}/Documents/"+project_name
 except:
 	sys.exit("Please insert a project name!")
 
