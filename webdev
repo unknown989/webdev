@@ -88,7 +88,7 @@ def default():
 def node():
 	os.chdir(project_name)
 	sp.run("npm init",shell=True)
-	sp.run("npm i nodemon",shell=True)
+	sp.run("sudo npm -g i nodemon",shell=True)
 	with open("main.js","w") as f:
 		f.write('console.log("Everything is working");')
 	print("Please run `nodemon main.js` or `node main.js`")
